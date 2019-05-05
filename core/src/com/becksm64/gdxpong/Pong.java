@@ -10,6 +10,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector3;
+import com.badlogic.gdx.utils.Timer;
 
 import java.util.Random;
 
@@ -34,6 +35,7 @@ public class Pong extends ApplicationAdapter {
 	private String enemyScoreDisplay;
 	private BitmapFont bitmapFont;
 	private Random rand;
+	private boolean playerScored;
 	
 	@Override
 	public void create () {
@@ -61,6 +63,7 @@ public class Pong extends ApplicationAdapter {
 		bitmapFont = new BitmapFont();
 
 		rand = new Random();
+		playerScored = true;
 	}
 
 	@Override
@@ -131,13 +134,36 @@ public class Pong extends ApplicationAdapter {
 			//Give point to player who scored
 			if(ball.position.x < 0) {
 				player.score++;
-			} else {
+				playerScored = true;
+			} else if(ball.position.x > Gdx.graphics.getWidth()){
 				enemy.score++;
+				playerScored = false;
 			}
 
 			//Put ball back in the middle of the court
-			ball.position.x = Gdx.graphics.getWidth() / 2;
-			ball.getVelocity().x *= -1;
+			ball.position.x = (Gdx.graphics.getWidth() / 2) - (ball.WIDTH / 2);
+			ball.position.y = (Gdx.graphics.getHeight() / 2) - (ball.HEIGHT / 2);
+			ball.getVelocity().x = 0;
+			ball.getVelocity().y = 0;
+
+			//Set a delay when the ball is put back into the middle of the court
+			float delay = 1;//Delay in seconds
+			Timer.schedule(new Timer.Task(){
+				@Override
+				public void run() {
+
+					//Give ball velocity after delay
+					ball.getVelocity().x = 25;
+					ball.getVelocity().y = 12;
+
+					if(!playerScored) {
+
+						//Make ball go towards enemy if they scored
+						ball.getVelocity().x *= -1;
+						ball.getVelocity().y *= -1;
+					}
+				}
+			}, delay);
 		}
 	}
 	
