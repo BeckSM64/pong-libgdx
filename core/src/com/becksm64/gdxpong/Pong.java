@@ -132,10 +132,10 @@ public class Pong extends ApplicationAdapter {
 		if(!ball.isOnScreen()) {
 
 			//Give point to player who scored
-			if(ball.position.x < 0) {
+			if(ball.position.x > Gdx.graphics.getWidth()) {
 				player.score++;
 				playerScored = true;
-			} else if(ball.position.x > Gdx.graphics.getWidth()){
+			} else if(ball.position.x <0){
 				enemy.score++;
 				playerScored = false;
 			}
