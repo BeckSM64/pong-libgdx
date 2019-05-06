@@ -42,10 +42,10 @@ public class EnemyPaddle {
     private void move() {
 
         //Only move if ball is coming toward enemy (Enemy is always located on right side of screen)
-        if(Pong.ball.getVelocity().x > 0) {
+        if(GameScreen.ball.getVelocity().x > 0) {
 
             //Check position of paddle in relation to ball and move accordingly
-            if(position.y < Pong.ball.getPosition().y) {
+            if(position.y < GameScreen.ball.getPosition().y) {
                 velocity.y = 11;
             } else {
                 velocity.y = -11;
