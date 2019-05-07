@@ -7,6 +7,7 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.Timer;
@@ -29,6 +30,7 @@ public class GameScreen implements Screen {
     private String playerScoreDisplay;
     private String enemyScoreDisplay;
     private BitmapFont bitmapFont;
+    private BitmapFont font72;
     private Random rand;
     private boolean playerScored;
 
@@ -59,6 +61,12 @@ public class GameScreen implements Screen {
 
         rand = new Random();
         playerScored = true;
+
+        //Freetype fonts
+        FreeTypeFontGenerator generator = new FreeTypeFontGenerator(Gdx.files.internal("fonts/cour.ttf"));
+        FreeTypeFontGenerator.FreeTypeFontParameter parameter = new FreeTypeFontGenerator.FreeTypeFontParameter();
+        parameter.size = 72;
+        font72 = generator.generateFont(parameter);
     }
 
     @Override
@@ -89,10 +97,10 @@ public class GameScreen implements Screen {
 
         //Draw scores
         batch.begin();
-        bitmapFont.setColor(Color.BLACK);
-        bitmapFont.getData().setScale(10, 10);
-        bitmapFont.draw(batch, Integer.toString(player.getScore()), Gdx.graphics.getWidth() / 4, Gdx.graphics.getHeight() - 20);
-        bitmapFont.draw(batch, Integer.toString(enemy.getScore()), Gdx.graphics.getWidth() - (Gdx.graphics.getWidth() / 4), Gdx.graphics.getHeight() - 20);
+        font72.setColor(Color.BLACK);
+        //bitmapFont.getData().setScale(10, 10);
+        font72.draw(batch, Integer.toString(player.getScore()), Gdx.graphics.getWidth() / 4, Gdx.graphics.getHeight() - 20);
+        font72.draw(batch, Integer.toString(enemy.getScore()), Gdx.graphics.getWidth() - (Gdx.graphics.getWidth() / 4), Gdx.graphics.getHeight() - 20);
         batch.end();
 
         //Draw the court

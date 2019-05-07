@@ -2,9 +2,11 @@ package com.becksm64.gdxpong;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
@@ -23,7 +25,7 @@ public class MainMenuScreen implements Screen {
     TextButton startButton;
     TextButton quitButton;
     TextButton.TextButtonStyle textButtonStyle;
-    //Label gameTitle;
+    Label gameTitle;
 
     //Table stuff
     Table table;
@@ -36,26 +38,36 @@ public class MainMenuScreen implements Screen {
         cam = new OrthographicCamera();
         cam.setToOrtho(false, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());//Set camera viewport to device screen size
 
+        //True type fonts
+        FreeTypeFontGenerator generator = new FreeTypeFontGenerator(Gdx.files.internal("fonts/cour.ttf"));
+        FreeTypeFontGenerator.FreeTypeFontParameter parameter = new FreeTypeFontGenerator.FreeTypeFontParameter();
+        parameter.size = 72;
+        BitmapFont font72 = generator.generateFont(parameter);
+
+        parameter.size = 150;
+        BitmapFont font150 = generator.generateFont(parameter);
+        generator.dispose();
+
         //Table and stage stuff
         stage = new Stage();
         table = new Table();
         table.setFillParent(true);
         stage.addActor(table);
-        table.debug();
+        //table.debug();
 
         //Create menu buttons and game title
         Gdx.input.setInputProcessor(stage);
-        game.font = new BitmapFont();
-        game.font.getData().setScale(5,5);
         textButtonStyle = new TextButton.TextButtonStyle();
-        textButtonStyle.font = game.font;
+        textButtonStyle.font = font72;
         startButton = new TextButton("Start", textButtonStyle);
         quitButton = new TextButton("Quit", textButtonStyle);
-        //gameTitle = new Label("PONG", new Skin());
+        Skin testSkin = new Skin(Gdx.files.internal("skins/uiskin.json"));
+        gameTitle = new Label("PONG", testSkin);
+        gameTitle.setStyle(new Label.LabelStyle(font150, Color.WHITE));
 
         //Add actors to the table
-        //table.add(gameTitle);
-        //table.row();//Next row, essentially puts following table element on a new line
+        table.add(gameTitle);
+        table.row();//Next row, essentially puts following table element on a new line
         table.add(startButton);
         table.row();
         table.add(quitButton);
