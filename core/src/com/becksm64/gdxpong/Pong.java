@@ -30,5 +30,6 @@ public class Pong extends Game {
 
 		font.dispose();
 		batch.dispose();
+		System.exit(0);
 	}
 }
