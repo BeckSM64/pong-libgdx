@@ -1,6 +1,7 @@
 package com.becksm64.gdxpong;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
@@ -11,53 +12,49 @@ import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.Timer;
+import com.badlogic.gdx.utils.viewport.FitViewport;
+import com.badlogic.gdx.utils.viewport.Viewport;
 
 import java.util.Random;
 
 public class GameScreen implements Screen {
 
     final Pong game;
-
     SpriteBatch batch;
 
-    //Pong objects
     private Paddle player;
     private EnemyPaddle enemy;
-    public static Ball ball;
+    public static Ball ball;//Needs to be accessed from enemy paddle class
     private Vector3 touchPos;
     private OrthographicCamera cam;
     private ShapeRenderer courtBorder;
-    private String playerScoreDisplay;
-    private String enemyScoreDisplay;
-    private BitmapFont bitmapFont;
     private BitmapFont font72;
     private Random rand;
     private boolean playerScored;
+    private int ballVelX;
+    private int ballVelY;
 
-    public GameScreen(Pong game) {
+    public GameScreen(Pong game, int ballVelX, int ballVelY, int enemySpeed) {
 
         this.game = game;
+        this.ballVelX = ballVelX;
+        this.ballVelY = ballVelY;
 
         batch = new SpriteBatch();
 
         //Game Objects
         player = new Paddle(10, 10);
-        enemy = new EnemyPaddle(10, 10);
+        enemy = new EnemyPaddle(10, 10, enemySpeed);
         enemy.position.x = Gdx.graphics.getWidth() - (enemy.WIDTH + 10);
-        ball = new Ball(100, 100);
+        ball = new Ball(100, 100, ballVelX, ballVelY);
 
         //Camera and touch position
         cam = new OrthographicCamera();
         cam.setToOrtho(false, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
         touchPos = new Vector3(10,10,0);
 
-        //Draw court
+        //Lines for court
         courtBorder = new ShapeRenderer();
-
-        //Scores and Bitmap fonts
-        playerScoreDisplay = "0";
-        enemyScoreDisplay = "0";
-        bitmapFont = new BitmapFont();
 
         rand = new Random();
         playerScored = true;
@@ -67,6 +64,8 @@ public class GameScreen implements Screen {
         FreeTypeFontGenerator.FreeTypeFontParameter parameter = new FreeTypeFontGenerator.FreeTypeFontParameter();
         parameter.size = 72;
         font72 = generator.generateFont(parameter);
+
+        Gdx.input.setCatchBackKey(true);//Enable back key on android
     }
 
     @Override
@@ -98,7 +97,6 @@ public class GameScreen implements Screen {
         //Draw scores
         batch.begin();
         font72.setColor(Color.BLACK);
-        //bitmapFont.getData().setScale(10, 10);
         font72.draw(batch, Integer.toString(player.getScore()), Gdx.graphics.getWidth() / 4, Gdx.graphics.getHeight() - 20);
         font72.draw(batch, Integer.toString(enemy.getScore()), Gdx.graphics.getWidth() - (Gdx.graphics.getWidth() / 4), Gdx.graphics.getHeight() - 20);
         batch.end();
@@ -111,7 +109,6 @@ public class GameScreen implements Screen {
 
         //Draw the ball
         ball.shape.begin(ShapeRenderer.ShapeType.Filled);
-        //ball.shape.setColor(new Color(rand.nextInt(5), rand.nextInt(5), rand.nextInt(5), 1));
         ball.shape.setColor(Color.BLACK);
         ball.shape.rect(ball.position.x, ball.position.y, ball.WIDTH, ball.HEIGHT);
         ball.shape.end();
@@ -158,8 +155,8 @@ public class GameScreen implements Screen {
                 public void run() {
 
                     //Give ball velocity after delay
-                    ball.getVelocity().x = 25;
-                    ball.getVelocity().y = 12;
+                    ball.getVelocity().x = ballVelX;
+                    ball.getVelocity().y = ballVelY;
 
                     if(!playerScored) {
 
@@ -169,6 +166,12 @@ public class GameScreen implements Screen {
                     }
                 }
             }, delay);
+        }
+
+        //Go back to main menu if back button is pressed on android
+        if(Gdx.input.isKeyJustPressed(Input.Keys.BACK)) {
+            game.setScreen(new MainMenuScreen(this.game));
+            dispose();
         }
     }
 
@@ -197,7 +200,6 @@ public class GameScreen implements Screen {
 
         ball.shape.dispose();
         player.shape.dispose();
-        bitmapFont.dispose();
         batch.dispose();
     }
 }

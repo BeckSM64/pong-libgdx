@@ -15,10 +15,10 @@ public class Ball {
     public ShapeRenderer shape;
     private Rectangle ballBounds;
 
-    public Ball(int x, int y) {
+    public Ball(int x, int y, int velocityX, int velocityY) {
 
         position = new Vector3(x, y, 0);
-        velocity = new Vector3(25,12,0);
+        velocity = new Vector3(velocityX, velocityY,0);
         shape = new ShapeRenderer();
         ballBounds = new Rectangle(x, y, WIDTH, HEIGHT);
     }

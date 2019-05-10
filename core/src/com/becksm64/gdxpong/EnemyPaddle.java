@@ -15,14 +15,16 @@ public class EnemyPaddle {
     public ShapeRenderer shape;
     private Rectangle paddleBounds;
     public int score;
+    private int paddleSpeed;
 
-    public EnemyPaddle(int x, int y) {
+    public EnemyPaddle(int x, int y, int paddleSpeed) {
 
         position = new Vector3(x, y, 0);
         velocity = new Vector3(0,0,0);
         shape = new ShapeRenderer();
         paddleBounds = new Rectangle(x, y, WIDTH, HEIGHT);
         score = 0;
+        this.paddleSpeed = paddleSpeed;
     }
 
     /*
@@ -46,9 +48,9 @@ public class EnemyPaddle {
 
             //Check position of paddle in relation to ball and move accordingly
             if(position.y < GameScreen.ball.getPosition().y) {
-                velocity.y = 11;
+                velocity.y = paddleSpeed;
             } else {
-                velocity.y = -11;
+                velocity.y = -paddleSpeed;
             }
         } else {
             velocity.y = 0;//Stop moving when the ball isn't coming towards enemy
